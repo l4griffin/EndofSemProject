@@ -40,7 +40,8 @@ import joblib
 model = joblib.load('mushroom_model_5.pkl')
 encoders = joblib.load('encoders_5.pkl')
 
-st.title("🍄 Mushroom Edibility Predictor (Descriptive Input)")
+st.title("Eddie Mush🍄")
+st.write("Predict if a mushroom is edible or poisonous based on its features.")
 
 # Feature label mappings: Full name → short code
 feature_mappings = {
