@@ -31,3 +31,40 @@ model.fit(X_train, y_train)
 
 # Save trained model
 joblib.dump(model, 'mushroom_model.pkl')
+
+
+# Load model and encoders
+model = joblib.load('mushroom_model.pkl')
+encoders = joblib.load('encoders.pkl')
+
+st.title("🍄 Mushroom Edibility Predictor")
+
+# Get user input
+cap_shape = st.selectbox("Cap Shape", ['b', 'c', 'x', 'f', 'k', 's'])
+cap_color = st.selectbox("Cap Color", ['n', 'b', 'c', 'g', 'r', 'p', 'u', 'e', 'w', 'y'])
+odor = st.selectbox("Odor", ['a', 'l', 'c', 'y', 'f', 'm', 'n', 'p', 's'])
+gill_color = st.selectbox("Gill Color", ['k', 'n', 'g', 'p', 'w', 'h', 'u', 'e', 'b', 'y'])
+
+# Add more features as needed
+
+user_input = {
+    'cap-shape': cap_shape,
+    'cap-color': cap_color,
+    'odor': odor,
+    'gill-color': gill_color,
+    # Add all other required features from the original dataset
+}
+
+# Encode user input using the saved encoders
+for feature in user_input:
+    le = encoders[feature]
+    user_input[feature] = le.transform([user_input[feature]])[0]
+
+# Convert to DataFrame
+input_df = pd.DataFrame([user_input])
+
+# Predict
+prediction = model.predict(input_df)[0]
+prediction_label = encoders['class'].inverse_transform([prediction])[0]
+
+st.subheader(f"Prediction: {'🟢 Edible' if prediction_label == 'e' else '🔴 Poisonous'}")
