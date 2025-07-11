@@ -133,4 +133,3 @@ with st.sidebar:
     with a pinch of data and a sprinkle of magic 🍄!
     """)
 
-Let me know if you'd like me to generate a visual preview of this version too!
