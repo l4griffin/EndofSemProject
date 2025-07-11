@@ -1,17 +1,16 @@
-# training_selected_features.py
+# Training the data models
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import joblib
+import streamlit as st
 
-# Load data
+# Load and prepare the dataset
 df = pd.read_csv("mushrooms.csv")
-
-# Define selected features
 selected_features = ['odor', 'gill-color', 'bruises', 'spore-print-color', 'gill-size']
 
-# Encode all columns and save encoders
+# Encode categorical features in the app
 encoders = {}
 for column in selected_features + ['class']:
     le = LabelEncoder()
@@ -21,29 +20,68 @@ for column in selected_features + ['class']:
 # Save encoders
 joblib.dump(encoders, 'encoders_5.pkl')
 
-# Train model using only selected features
+# Train the data model
 X = df[selected_features]
 y = df['class']
-
 model = RandomForestClassifier()
 model.fit(X, y)
-
-# Save trained model
 joblib.dump(model, 'mushroom_model_5.pkl')
 
-
-import streamlit as st
-import pandas as pd
-import joblib
-
-# Load model and encoders
+# Load the model and the encoders
 model = joblib.load('mushroom_model_5.pkl')
 encoders = joblib.load('encoders_5.pkl')
 
-st.title("Eddie Mush🍄")
-st.write("Predict if a mushroom is edible or poisonous based on its features.")
+#Input custom background to style and set a theme
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
 
-# Feature label mappings: Full name → short code
+    .stApp {
+        background-image: url('https://images.unsplash.com/photo-1536002955755-69c99f7f5244');
+        background-size: cover;
+        background-attachment: fixed;
+        font-family: 'Caveat', cursive;
+        color: #fff;
+    }
+    h1, h2, h3 {
+        color: #fffcf2;
+        text-shadow: 1px 1px 4px #444;
+    }
+    div.stButton > button {
+        background-color: #7ec850;
+        color: white;
+        border-radius: 12px;
+        font-weight: bold;
+        box-shadow: 2px 2px 6px #345920;
+        transition: 0.3s ease-in-out;
+    }
+    div.stButton > button:hover {
+        background-color: #9fe870;
+        transform: scale(1.05);
+    }
+    .sidebar .sidebar-content {
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 1em;
+        border-radius: 12px;
+        color: #fceee9;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+#add an enchanted magial faerie audio to set the mood
+st.markdown("""
+    <audio autoplay loop controls style="margin-top: 10px;">
+        <source src="https://cdn.pixabay.com/audio/2022/03/23/audio_6b71c3b7d3.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+""", unsafe_allow_html=True)
+
+#Give the app a title and brief description
+st.title("The Justoriafin Faerie Oracle Forest 🌈🍄🧚‍♀")
+st.subheader("🌸 Whisper your Mushroom's magical traits to the forest...")
+st.write("🔮 Speak now, traveler… and the Oracle shall unveil thy mushroom’s fate: nourishment or peril.")
+
+#Add feature label mappings
 feature_mappings = {
     'odor': {
         "Almond": 'a', "Anise": 'l', "Creosote": 'c', "Fishy": 'y',
@@ -66,26 +104,40 @@ feature_mappings = {
     }
 }
 
-# Features to collect
-selected_features = list(feature_mappings.keys())
+#Allow the user to input data
 user_input = {}
-
-# Show user-friendly dropdowns
 for feature in selected_features:
-    full_names = list(feature_mappings[feature].keys())
-    user_friendly_value = st.selectbox(feature.replace("-", " ").capitalize(), full_names)
-    # Convert full name to short code for model input
-    code = feature_mappings[feature][user_friendly_value]
-    # Encode using saved label encoder
+    options = list(feature_mappings[feature].keys())
+    user_choice = st.selectbox(feature.replace("-", " ").capitalize(), options)
+    code = feature_mappings[feature][user_choice]
     user_input[feature] = encoders[feature].transform([code])[0]
 
-# Create input DataFrame
 input_df = pd.DataFrame([user_input])
-
-# Predict
 prediction = model.predict(input_df)[0]
 prediction_label = encoders['class'].inverse_transform([prediction])[0]
 
-# Output
-st.subheader("Prediction:")
-st.success("🟢 Edible" if prediction_label == 'e' else "🔴 Poisonous")
+#Display prediction of User's input
+if prediction_label == 'e':
+    st.balloons()
+    st.image("https://i.imgur.com/RXUkmHt.png", width=120)
+    st.success("✨ This mushroom is safe and nourishing. You may feast under the moonlight.")
+else:
+    st.snow()
+    st.image("https://i.imgur.com/UcObIsy.png", width=120)
+    st.error("⚠ This mushroom holds poisonous magic. Do not touch, lest you be cursed!")
+
+#Add an additional sidebar highlighting the group(4)
+with st.sidebar:
+    st.markdown("## 🧚 Welcome to the Justoriafin Oracle Forest")
+    st.markdown("""
+    Thanks to three slightly overcaffeinated students,  
+    Victoria, Justin, and Griffin,  
+    you have stumbled into the whimsical world of mushrooms and mystery.
+
+    This curious oracle is part of their Info-sec semester project—  
+    where data science meets enchanted spores.
+
+    Choose your mushroom’s traits wisely…  
+    and the Oracle Forest shall reveal its secrets:  
+    with the help of a pinch of data and a sprinkle of magic 🍄!
+    """)
