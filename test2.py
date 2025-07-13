@@ -116,11 +116,11 @@ if st.button('Predict Mushroom Safety'):
     # Display result
     if prediction_label == 'e':
         st.balloons()
-        st.image("https://i.imgur.com/RXUkmHt.png", width=120)
+        st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkRkaNrQuvMYYeeExeUI7Ft3vHJ3L94Tc_zg&s", width=120)
         st.success("✨ This mushroom is safe and nourishing. You may feast under the moonlight.")
     else:
         st.snow()
-        st.image("https://i.imgur.com/UcObIsy.png", width=120)
+        st.image("https://swallowtail.ca/wp-content/uploads/sites/5751/2020/06/death-cap.jpg?w=1000&h=1000&zoom=2", width=120)
         st.error("⚠ This mushroom holds poisonous magic. Do not touch, lest you be cursed!")
 
 # Sidebar
