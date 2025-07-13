@@ -106,19 +106,22 @@ for feature in selected_features:
     code = feature_mappings[feature][chosen]
     user_input[feature] = encoders[feature].transform([code])[0]
 
-input_df = pd.DataFrame([user_input])
-prediction = model.predict(input_df)[0]
-prediction_label = encoders['class'].inverse_transform([prediction])[0]
+# Add a "predict" button to trigger the prediction
+if st.button('Predict Mushroom Safety'):
+    # Convert user input into a DataFrame for prediction
+    input_df = pd.DataFrame([user_input])
+    prediction = model.predict(input_df)[0]
+    prediction_label = encoders['class'].inverse_transform([prediction])[0]
 
-# Result
-if prediction_label == 'e':
-    st.balloons()
-    st.image("https://i.imgur.com/RXUkmHt.png", width=120)
-    st.success("✨ This mushroom is safe and nourishing. You may feast under the moonlight.")
-else:
-    st.snow()
-    st.image("https://i.imgur.com/UcObIsy.png", width=120)
-    st.error("⚠ This mushroom holds poisonous magic. Do not touch, lest you be cursed!")
+    # Display result
+    if prediction_label == 'e':
+        st.balloons()
+        st.image("https://i.imgur.com/RXUkmHt.png", width=120)
+        st.success("✨ This mushroom is safe and nourishing. You may feast under the moonlight.")
+    else:
+        st.snow()
+        st.image("https://i.imgur.com/UcObIsy.png", width=120)
+        st.error("⚠ This mushroom holds poisonous magic. Do not touch, lest you be cursed!")
 
 # Sidebar
 with st.sidebar:
