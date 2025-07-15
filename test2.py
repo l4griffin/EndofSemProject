@@ -10,7 +10,7 @@ df = pd.read_csv("mushrooms.csv")
 
 # Feature selection
 selected_features = ['odor', 'gill-color', 'bruises', 'spore-print-color', 'gill-size']
-
+#w
 # Encode features
 encoders = {}
 for column in selected_features + ['class']:
